@@ -1,6 +1,6 @@
 package com.example.emicalculator;
 
-import androidx.appcompat.app.AppCompatActivity;
+
 
 import android.os.Bundle;
 import android.view.View;
@@ -11,13 +11,14 @@ import android.widget.Toast;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.DecimalFormat;
+import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     TextInputEditText txtpamount, txtinterest, txtyear;
     Button btncal;
-    ;
-    TextView txt1, txtans;
+
+    TextView txt1,txt2,txt3, txtans, txtans2,txtans3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,22 +28,44 @@ public class MainActivity extends AppCompatActivity {
         txtinterest = findViewById(R.id.txtinterest);
         txtyear = findViewById(R.id.txtyear);
         txt1 = findViewById(R.id.txt1);
+        txt2 = findViewById(R.id.txt2);
+        txt2 = findViewById(R.id.txt3);
         txtans = findViewById(R.id.txtans);
+        txtans2 = findViewById(R.id.txtans2);
+        txtans3 = findViewById(R.id.txtans3);
         btncal = findViewById(R.id.btncal);
 
-        btncal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                double principal = Integer.parseInt(txtpamount.getText().toString());
-                double interest = Integer.parseInt(txtinterest.getText().toString());
-                double year = Integer.parseInt(txtyear.getText().toString());
-                double ans;
+        Print("Welcome");
 
-                interest = interest / 12 / 100;
-                ans = interest * (1 + interest) * year / (1 + interest) * year - 1;
-                Toast.makeText(MainActivity.this, "Succsfully", Toast.LENGTH_LONG).show();
-                txtans.setText(new DecimalFormat().format(ans));
-            }
-        });
+        btncal.setOnClickListener(this::onClick);
+    }
+
+    private void onClick(View view) {
+        double principal = Double.parseDouble(Objects.requireNonNull(txtpamount.getText()).toString());
+        double interest = Double.parseDouble(txtinterest.getText().toString());
+        double mon = Double.parseDouble(txtyear.getText().toString());
+        double ans1 = 1;
+        double r = interest / (12 *100);
+
+        for (int i = 0;i<mon;i++) {
+            ans1 *= (1+r);
+        }
+
+        double ans = principal * r * (ans1/(ans1-1));
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(1);
+        txtans.setText(df.format(ans));
+        double tamt =  ans*mon;
+        txtans2.setText(df.format(tamt));
+        double iamt = tamt - principal;
+        txtans3.setText(df.format(iamt));
+
+
+
+
+
+        Toast.makeText(MainActivity.this, "Succsfully", Toast.LENGTH_LONG).show();
+
+
     }
 }
